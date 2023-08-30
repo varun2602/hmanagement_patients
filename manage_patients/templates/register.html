@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" rel="stylesheet">
+    <script crossorigin="anonymous"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script crossorigin="anonymous"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"></script>
+    <script crossorigin="anonymous"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"></script>
+    <style>
+    /* Importing fonts from Google */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
+/* Reseting */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background: linear-gradient(to bottom, #000428, #004683);
+}
+
+.wrapper {
+    max-width: 450px;
+    margin: 50px auto;
+    padding: 20px 30px;
+    min-height: 300px;
+    background-color: #ffffff27;
+    border-top: 1px solid #ffffff6e;
+    border-left: 1px solid #ffffff6e;
+    border-radius: 15px;
+}
+
+.wrapper .h5 {
+    color: #ddd;
+}
+
+.wrapper .form-group {
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 1.5rem;
+}
+
+.wrapper .form-group:hover {
+    border-bottom: 1px solid #eee;
+}
+
+.wrapper .form-group .icon {
+    color: #e8e8e8;
+}
+
+.wrapper .form-group .form-control {
+    background: inherit;
+    border: none;
+    border-radius: 0px;
+    box-shadow: none;
+    color: #e9e9e9;
+}
+
+.wrapper .form-group input::placeholder {
+    color: #ccc;
+}
+
+.wrapper .form-group input:focus::placeholder {
+    opacity: 0;
+}
+
+.wrapper .form-group .fa-phone {
+    transform: rotate(90deg);
+}
+
+
+.wrapper .option {
+    color: #ccc;
+    display: block;
+    position: relative;
+    padding-left: 25px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    user-select: none
+}
+
+.wrapper .option:hover {
+    color: #eee;
+}
+
+.wrapper .option input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0
+}
+
+.wrapper .checkmark {
+    position: absolute;
+    top: 3px;
+    left: 0;
+    height: 18px;
+    width: 18px;
+    background-color: inherit;
+    border: 2px solid #ccc;
+    border-radius: 2px
+}
+
+.wrapper .option input:checked~.checkmark {
+    transition: 300ms ease-in-out all
+}
+
+.wrapper .checkmark:after {
+    content: "\2713";
+    position: absolute;
+    display: none;
+    font-weight: 600;
+    color: #FFF;
+    font-size: 0.9rem;
+}
+
+.wrapper .option input:checked~.checkmark:after {
+    display: block
+}
+
+.wrapper .option .checkmark:after {
+    left: 2px;
+    top: -4px;
+    width: 5px;
+    height: 10px
+}
+
+.wrapper .btn.btn-primary {
+    position: relative;
+    color: #eee;
+    padding: 0.3rem 1rem;
+    border-radius: 20px;
+    border: 1px solid #ddd;
+    background-color: inherit;
+    box-shadow: none;
+    overflow: hidden;
+}
+#login_button{
+    text-align: center;
+}
+
+    </style>
+    <title>Register</title>
+    <script>
+    document.addEventListener('DOMContentLoaded', function(){
+    // When submit button is pressed 
+    document.addEventListener('submit', function(){
+        event.preventDefault();
+
+        let formdata = new FormData();
+        formdata.append('username', document.querySelector('#username').value)
+        formdata.append('email', document.querySelector('#email').value)
+        formdata.append('company_name', document.querySelector('#company_name').value)
+        formdata.append('company_designation', document.querySelector('#company_designation').value)
+        formdata.append('insurance', document.querySelector('#insurance').value)
+        formdata.append('password', document.querySelector('#password').value)
+        formdata.append('cpassword', document.querySelector('#cpassword').value)
+
+        fetch('/register', {
+            method:'POST',
+            body:formdata
+        }).then(response => response.json()).then(data => {
+            console.log(data)
+            document.querySelector('#register_response').innerHTML = data.message;
+            let form = document.querySelector('form')
+            form.reset();
+            document.querySelector('#username_available').style.display = 'none'
+            document.querySelector('#username_unavailable').style.display = 'none'
+            // console.log(data)
+        }).catch(error => console.log(error))
+
+        
+
+    })
+    // Validating if username is available 
+    let user_input_field = document.querySelector('#username')
+    
+    user_input_field.addEventListener('input', function(){
+        let form_data = new FormData();
+        form_data.append('username', document.querySelector('#username').value)
+        let username_available = document.querySelector('#username_available')
+        let username_unavailable = document.querySelector('#username_unavailable')
+        fetch('/validate_name',{
+            method:'POST',
+            body:form_data
+        }).then(response => response.json()).then(data => {
+            
+            // console.log(`Data` + data.r)
+            if(data.r == 20){
+                username_unavailable.style.display  = 'none';
+                username_available.style.display = 'block'
+                username_available.innerHTML = 'Username available !';
+                // console.log(data.r)
+                
+               
+            }
+            else if(data.r == 200){
+                username_available.style.display = 'none'
+                username_unavailable.style.display = 'block'
+                username_unavailable.innerHTML = 'Username unavailable'
+                // console.log(data.r)
+                
+
+            }
+        
+        }).catch(error => console.log(error))
+    })
+})
+
+    </script>
+</head>
+<body>
+
+<div class="wrapper">
+    <h3>
+        <div id="register_response"></div>
+    </h3>
+    <form , action="" method=''>
+        {% csrf_token %}
+        <div class="h5 font-weight-bold text-center mb-3">Patient Registration</div>
+
+        <div class="form-group d-flex align-items-center">
+            <div class="icon"><span class="far fa-user"></span></div>
+            <input autocomplete="off" class="form-control" id="username" name='username' placeholder="Username"
+                   required type="text">
+        </div>
+        <h6><span id='username_available'></span></h6>
+        <h6><span id='username_unavailable'></span></h6>
+        <div class="form-group d-flex align-items-center">
+            <div class="icon"><span class="far fa-user"></span></div>
+            <input autocomplete="off" class="form-control" id="email" name='email' placeholder="Email"
+                   required type="email">
+        </div>
+        <div class="form-group d-flex align-items-center">
+            <div class="icon"><span class="far fa-user"></span></div>
+            <input autocomplete="off" class="form-control" id="company_name" name='company_name' placeholder="Company Name"
+                   required type="text">
+        </div>
+        <div class="form-group d-flex align-items-center">
+            <div class="icon"><span class="far fa-user"></span></div>
+            <input autocomplete="off" class="form-control" id="company_designation" name='company_designation'
+                   placeholder="Company Designation" required type="text">
+        </div>
+        <div class="form-group">
+            <!-- <label for="dropdown">Dropdown Menu:</label> -->
+            <select class="form-control" id="insurance" required>
+                <option disabled selected value="">--Insurance--</option>
+                <option value="None">None</option>
+                <option value="Partial">Partial</option>
+                <option value="Complete">Complete</option>
+            </select>
+        </div>
+        <!-- <div class="form-group d-flex align-items-center">
+            <div class="icon"><span class="far fa-envelope"></span></div>
+            <input autocomplete="off" type="email" class="form-control" name = 'email' id = "email" placeholder="Email">
+        </div> -->
+        <div class="form-group d-flex align-items-center">
+            <div class="icon"><span class="fas fa-map-marker-alt"></span></div>
+            <input autocomplete="off" class="form-control" id="password" name='password' placeholder="Password"
+                   required type="password">
+        </div>
+        <div class="form-group d-flex align-items-center">
+            <div class="icon"><span class="fas fa-key"></span></div>
+            <input autocomplete="off" class="form-control" id="cpassword" name='cpassword' placeholder="Confirm Password"
+                   required type="password">
+            <div class="icon btn"><span class="fas fa-eye-slash"></span></div>
+        </div>
+        <div class="mb-2">
+            <label class="option">Remember me
+                <input checked type="checkbox">
+                <span class="checkmark"></span>
+            </label>
+        </div>
+        <div class="btn btn-primary mb-3"><input id='submit' style='border:none; background-color: transparent;'
+                                                 type="submit">
+        </div>
+        <!-- <div class="terms mb-2">
+            By clicking "Signup", you acknowledge that you have read the
+            <a href="#">Privacy Policy</a> and agree to the
+            <a href="#">Terms of Service</a>.
+        </div> -->
+        <div class="connect border-bottom mt-4 mb-4"></div>
+        <!-- <ul class="p-0 social-links">
+            <li><a href="#"><span class="fab fa-facebook-f"></span></a></li>
+            <li><a href="#"><span class="fab fa-google"></span></a></li>
+            <li><a href="#"><span class="fab fa-github"></span></a></li>
+        </ul> -->
+    </form>
+    <div id="login_button"><a href="{% url 'login' %}">
+        <button class="btn btn-link" type="button">Log In</button>
+    </a></div>
+</div>
+</body>
+</html>

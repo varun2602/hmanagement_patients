@@ -1,0 +1,82 @@
+{% extends 'layout.html' %} 
+
+{% block title %}
+<style>
+    table td,
+    table th {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+    .intro {
+  padding-top: 100px; /* adjust this value as needed */
+}
+
+
+    .mask-custom {
+      background: rgba(24, 24, 16, .2);
+      border-radius: 2em;
+      backdrop-filter: blur(25px);
+      border: 2px solid rgba(255, 255, 255, 0.05);
+      background-clip: padding-box;
+      box-shadow: 10px 10px 10px rgba(46, 54, 68, 0.03);
+    }
+
+    body {
+      height: 100%;
+      margin: 0;
+      background-image: url('https://mdbootstrap.com/img/Photos/new-templates/glassmorphism-article/img7.jpg');
+      background-size: cover;
+    }
+    #message_res{
+        text-align: center;
+        color:red;
+    }
+</style>
+
+{% endblock %} 
+
+{% block body %} 
+<h3 id="message_res"></h3>
+<section class="intro">
+    <div class="mask d-flex align-items-center h-100">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-12">
+                    <div class="card mask-custom">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover text-white mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Sr</th>
+                                            <th scope="col">Doctor Name</th>
+                                            <th scope="col">Patient Name</th>
+                                            <th scope="col">Date of Appointment</th>
+                                            
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        
+                                        {% for appointment in all_confirmed %}
+                                        <tr id = "row_{{forloop.counter}}">
+                                            <td>{{forloop.counter}}</td>
+                                            <td class = "doctor">{{ appointment.DoctorName }}</td>
+                                            <td class = "patient">{{ appointment.PatientName }}</td>
+                                            <td class = "datetime">{{ appointment.DateOfAppointment }}</td>
+        
+                                        </tr>
+                                    
+                                        {% endfor %}
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

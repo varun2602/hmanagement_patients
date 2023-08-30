@@ -1,0 +1,237 @@
+{% extends 'layout.html' %}
+{% block title %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700;900&display=swap');
+
+*, body {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+html, body {
+    height: 100%;
+    background-color: #152733;
+    overflow: hidden;
+}
+
+
+.form-holder {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      min-height: 100vh;
+}
+
+.form-holder .form-content {
+    position: relative;
+    text-align: center;
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-justify-content: center;
+    justify-content: center;
+    -webkit-align-items: center;
+    align-items: center;
+    padding: 60px;
+}
+
+.form-content .form-items {
+    border: 3px solid #fff;
+    padding: 40px;
+    display: inline-block;
+    width: 100%;
+    min-width: 540px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    text-align: left;
+    -webkit-transition: all 0.4s ease;
+    transition: all 0.4s ease;
+}
+
+.form-content h3 {
+    color: #fff;
+    text-align: left;
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.form-content h3.form-title {
+    margin-bottom: 30px;
+}
+
+.form-content p {
+    color: #fff;
+    text-align: left;
+    font-size: 17px;
+    font-weight: 300;
+    line-height: 20px;
+    margin-bottom: 30px;
+}
+
+
+.form-content label, .was-validated .form-check-input:invalid~.form-check-label, .was-validated .form-check-input:valid~.form-check-label{
+    color: #fff;
+}
+
+.form-content input[type=text], .form-content input[type=password], .form-content input[type=email], .form-content select {
+    width: 100%;
+    padding: 9px 20px;
+    text-align: left;
+    border: 0;
+    outline: 0;
+    border-radius: 6px;
+    background-color: #fff;
+    font-size: 15px;
+    font-weight: 300;
+    color: #8D8D8D;
+    -webkit-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+    margin-top: 16px;
+}
+
+
+.btn-primary{
+    background-color: #6C757D;
+    outline: none;
+    border: 0px;
+     box-shadow: none;
+}
+
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active{
+    background-color: #495056;
+    outline: none !important;
+    border: none !important;
+     box-shadow: none;
+}
+
+.form-content textarea {
+    position: static !important;
+    width: 100%;
+    padding: 8px 20px;
+    border-radius: 6px;
+    text-align: left;
+    background-color: #fff;
+    border: 0;
+    font-size: 15px;
+    font-weight: 300;
+    color: #8D8D8D;
+    outline: none;
+    resize: none;
+    height: 120px;
+    -webkit-transition: none;
+    transition: none;
+    margin-bottom: 14px;
+}
+
+.form-content textarea:hover, .form-content textarea:focus {
+    border: 0;
+    background-color: #ebeff8;
+    color: #8D8D8D;
+}
+
+.mv-up{
+    margin-top: -9px !important;
+    margin-bottom: 8px !important;
+}
+
+.invalid-feedback{
+    color: #ff606e;
+}
+
+.valid-feedback{
+   color: #2acc80;
+}
+p{
+    color:red;
+}
+#response{
+    color:red;
+}
+</style>
+<script>
+    document.addEventListener('DOMContentLoaded', function(){
+        (function () {
+'use strict'
+const forms = document.querySelectorAll('.requires-validation')
+Array.from(forms)
+  .forEach(function (form) {
+    form.addEventListener('submit', function (event) {
+      if (!form.checkValidity()) {
+        event.preventDefault()
+        event.stopPropagation()
+      }
+
+      form.classList.add('was-validated')
+    }, false)
+  })
+})
+// Register 
+document.addEventListener('submit', function(){
+    event.preventDefault()
+    let doc_name = document.querySelector('#doc_name').value
+    let datetime_str = document.querySelector('#datetimepicker').value
+    let formdata = new FormData()
+    formdata.append('doc_name', doc_name)
+    formdata.append('datetime_str', datetime_str)
+    fetch('book_appointment',{
+        body:formdata,
+        method:'POST'
+    }).then(response => response.json()).then(data => {
+        console.log(data)
+        let response_views = document.querySelector('#response')
+        response.innerText = data.message
+    }).catch(error => console.error(error))
+})
+    })
+
+</script>
+{% endblock %} 
+{% block body %} 
+
+<div class="form-body">
+    <div class="row">
+        <div class="form-holder">
+            <div class="form-content">
+                <div class="form-items">
+                    <h3 id="response"></h3>
+                    <h3>Book Appointment</h3>
+                    <p>Date should be minimum next day and not weekend</p>
+                    <p>Time should be between 9am and 5pm</p>
+                    <form class="requires-validation" novalidate action = "#" method = ''>
+
+                        <div class="col-md-12">
+                            <select class="form-select" name="doc_name" value="none" id = "doc_name"required>
+                                <option value="" selected disbled>Select Doctor</option>
+                                {% for r in response %} 
+                                 <option value="{{r.doc_name}}">Dr.{{r.doc_name}} {{r.designation}}</option>
+                                {% endfor %}
+                                
+                            </select>
+                            <div class="valid-feedback">Doctor field is valid!</div>
+                            <div class="invalid-feedback">Doctor field cannot be blank!</div>
+                        </div><br>
+                        <div class="col-md-12">
+                            <input class="form-control" type="datetime-local"  name="datetime" id = 'datetimepicker' placeholder="Date Time" required>
+                            <div class="valid-feedback">Datetime field is valid!</div>
+                            <div class="invalid-feedback">Datetime field cannot be blank!</div>
+                         </div>
+                        <div class="form-button mt-3">
+                            <button id="submit" type="submit" class="btn btn-primary">Book!</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    
+{% endblock %}

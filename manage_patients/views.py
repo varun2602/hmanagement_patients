@@ -24,19 +24,21 @@ def login_view(request):
         username = request.POST.get('username')
         # print(username)
         password = request.POST.get('password')
+
         try:
             user_login = models.Patient.objects.get(username=username)
-            user_save = authenticate(username=username, password=password)
-            print(username)
+            user_save = authenticate(request, username=username, password= password)
+            print(request)
+            print(user_login.password)
             print(user_save)
 
             if user_save is not None:
                 login(request, user_save)
                 return HttpResponseRedirect(reverse('index'))
             else:
-                data = {'message': 'Invalid request'}
-                json_data = json.dumps(data)
-                return HttpResponse(json_data, content_type='application/json r')
+                context = {'message': 'Invalid request'}
+                # json_data = json.dumps(data)
+                return render(request, "login.html", context)
         except models.Patient.DoesNotExist:
             context = {'message': 'Patient does not exist'}
             return render(request, 'login.html', context)
